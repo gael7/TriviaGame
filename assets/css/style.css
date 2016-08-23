@@ -1,0 +1,49 @@
+.outside{
+	background-image: url(../images/background.jpg);
+	background-size: 100% 100%;
+	background-repeat: repeat;
+}
+.banner{
+	background-image: url(../images/banner3.jpg);
+	height: 200px;
+	width: 630px ;
+	background-size: cover;
+	margin-left: auto;
+	margin-right: auto;
+	margin-bottom: 50px;
+	background-repeat: no-repeat;
+}
+#jumbo{
+	font-size: 40px;
+}
+#start{
+	margin: 50px;
+	margin-left: 140px;
+	font-size: 25px;
+	height: 50px;
+	width: 250px;
+}
+#info{
+	align-content: center;
+
+}
+.answer{
+	width: 250px;
+	height: 40px;
+	display: block;
+	margin: 5px 140px;
+}
+#vertical{
+	margin: 5px 150px;
+	width: 250px;
+	height:350px;
+}
+#horizontal{
+	margin: 5px 100px;
+	width: 350px;
+	height: 250px;
+}
+#correct, #incorrect{
+	font-size: 22px;
+	color: white;
+}
