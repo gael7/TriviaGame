@@ -100,6 +100,9 @@ var trivia={
 	createStartButton: function(){
 		$("#info").html("<a class='btn btn-danger btn-md' id='start'>Start</a>");
 	},
+	createStartOverButton: function(){
+		$("#info").append("<a class='btn btn-danger btn-md' id='startover'>Start Over?</a>");
+	},
 	createQuestions: function(a){
 		trivia.run();
 		$("#info").html("<p id='ques'>"+trivia.triviaQuestions[a].question+"</p>");
@@ -109,6 +112,8 @@ var trivia={
 		$("#info").append("<a class='btn btn-warning btn-md answer' id='answer4'>"+trivia.triviaQuestions[a].answer4+"</a>");
 	},
 	questionSequence: function(){
+		console.log("questions?");
+		console.log(trivia.questionNumber);
 		if(trivia.questionNumber<trivia.triviaQuestions.length){
 		trivia.number=10;
 		trivia.createQuestions(trivia.questionNumber);
@@ -145,6 +150,12 @@ var trivia={
 			$("#info").html("<p id='correct'> Correct Answers: "+trivia.correct +"</p>");
 			$("#info").append("<p id='incorrect'> Incorrect Answers: "+ trivia.incorrect+"</p>");
 			$("#info").append("<p id='correct'> Unaswered: "+trivia.unaswer+"</p>");
+			trivia.createStartOverButton();
+			$("#startover").on("click", function (event) {
+				console.log("startover");	
+				trivia.reset();
+				trivia.questionSequence();
+			});
 		}
 	},
 	run: function(){
@@ -170,11 +181,19 @@ var trivia={
 	stop: function(){
 		clearInterval(trivia.counter);
 	},
+	reset: function(){
+		trivia.counter= 0,
+		trivia.questionNumber= 0,
+		trivia.correct= 0,
+		trivia.incorrect= 0,
+		trivia.unaswer= 0
+	},
 };
 
 $(document).ready(function(){
 		trivia.createStartButton();
 		$("#start").on("click", function (event) {	
-				trivia.questionSequence();
-			});
+			trivia.questionSequence();
+		});
+		
 });
