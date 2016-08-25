@@ -90,15 +90,17 @@ var trivia={
 		correct: "Barney", 
 		correctImage: "shelikesit.jpg",
 		position: "horizontal"},],
-	number: 30,
+	number: 10,
 	counter: 0,
 	questionNumber: 0,
-	delay: 4000,
+	delay: 3000,
+	correct: 0,
+	incorrect: 0,
+	unaswer: 0,
 	createStartButton: function(){
 		$("#info").html("<a class='btn btn-danger btn-md' id='start'>Start</a>");
 	},
 	createQuestions: function(a){
-		console.log("createQuestions");
 		trivia.run();
 		$("#info").html("<p id='ques'>"+trivia.triviaQuestions[a].question+"</p>");
 		$("#info").append("<a class='btn btn-primary btn-md answer' id='answer1'>"+trivia.triviaQuestions[a].answer1+"</a>");
@@ -107,32 +109,43 @@ var trivia={
 		$("#info").append("<a class='btn btn-warning btn-md answer' id='answer4'>"+trivia.triviaQuestions[a].answer4+"</a>");
 	},
 	questionSequence: function(){
-		//console.log("questionSequence");
-		//console.log(trivia.triviaQuestions[trivia.questionNumber]);
+		if(trivia.questionNumber<trivia.triviaQuestions.length){
+		trivia.number=10;
 		trivia.createQuestions(trivia.questionNumber);
-		$(".answer").on("click", function (event) {	
-			var guess=$(this).attr("id");
-			console.log(guess);
-			console.log(trivia.triviaQuestions[trivia.questionNumber].correct);
-			if(guess===trivia.triviaQuestions[trivia.questionNumber].correctid){
-				$("#info").html("<p id='correct'>Correct!</p>");
-				$("#info").append("<img src='assets/images/"+trivia.triviaQuestions[trivia.questionNumber].correctImage+"' id='"+trivia.triviaQuestions[trivia.questionNumber].position +"'>");
-				trivia.stop();
-				setTimeout(function() {
-				trivia.questionNumber++;
-				trivia.questionSequence();
-				}, trivia.delay);
-			} else{
-				$("#info").html("<p id='correct'>Incorrect!</p>");
-				$("#info").append("<p id='incorrect'>The correct answer is: "+trivia.triviaQuestions[trivia.questionNumber].correct+"</p>");
-				$("#info").append("<img src='assets/images/"+trivia.triviaQuestions[trivia.questionNumber].correctImage+"' id='"+trivia.triviaQuestions[trivia.questionNumber].position +"'>");
-				trivia.stop();
-				setTimeout(function() {
-				trivia.questionNumber++;
-				trivia.questionSequence();
-				}, trivia.delay);
-			}
-		});
+				$(".answer").on("click", function (event) {	
+					var guess=$(this).attr("id");
+					if(guess===trivia.triviaQuestions[trivia.questionNumber].correctid){
+						$(".panel").attr('class', 'panel panel-success');
+						$(".panel-title").html("<p id='correct'>Correct!</p>");
+						$("#info").html("<img src='assets/images/"+trivia.triviaQuestions[trivia.questionNumber].correctImage+"' id='"+trivia.triviaQuestions[trivia.questionNumber].position +"'>");
+						trivia.stop();
+						trivia.correct++
+						setTimeout(function() {
+						trivia.questionNumber++;
+						$(".panel").attr('class', 'panel panel-default');
+						trivia.questionSequence();
+						}, trivia.delay);
+					} else if(guess!=trivia.triviaQuestions[trivia.questionNumber].correctid){
+						$(".panel").attr('class', 'panel panel-danger');
+						$(".panel-title").html("<p id='correct'>Incorrect!</p>");
+						$("#info").html("<p id='incorrect'>The correct answer is: "+trivia.triviaQuestions[trivia.questionNumber].correct+"</p>");
+						$("#info").append("<img src='assets/images/"+trivia.triviaQuestions[trivia.questionNumber].correctImage+"' id='"+trivia.triviaQuestions[trivia.questionNumber].position +"'>");
+						trivia.stop();
+						trivia.incorrect++
+						setTimeout(function() {
+						trivia.questionNumber++;
+						$(".panel").attr('class', 'panel panel-default');
+						trivia.questionSequence();
+						}, trivia.delay);
+					} 
+				});
+		} else {
+			$(".panel").attr('class', 'panel panel-default');
+			$(".panel-title").html("This are your results:");
+			$("#info").html("<p id='correct'> Correct Answers: "+trivia.correct +"</p>");
+			$("#info").append("<p id='incorrect'> Incorrect Answers: "+ trivia.incorrect+"</p>");
+			$("#info").append("<p id='correct'> Unaswered: "+trivia.unaswer+"</p>");
+		}
 	},
 	run: function(){
 		trivia.counter=setInterval(trivia.decrement, 1000);
@@ -140,10 +153,20 @@ var trivia={
 	decrement: function(){
 		trivia.number--;
 		$(".panel-title").html("Time remaining: "+trivia.number+" seconds");
-		if(trivia.number===0){
+		if (trivia.number===0){
 			trivia.stop();
-		}
-	},
+			$(".panel").attr('class', 'panel panel-info');
+			$(".panel-title").html("<p id='correct'>You ran out of time bro!</p>");
+			$("#info").html("<p id='incorrect'>The correct answer is: "+trivia.triviaQuestions[trivia.questionNumber].correct+"</p>");
+			$("#info").append("<img src='assets/images/"+trivia.triviaQuestions[trivia.questionNumber].correctImage+"' id='"+trivia.triviaQuestions[trivia.questionNumber].position +"'>");
+			trivia.unaswer++;
+			setTimeout(function() {
+			trivia.questionNumber++;
+			$(".panel").attr('class', 'panel panel-default');
+			trivia.questionSequence();
+			}, trivia.delay);}
+		},
+
 	stop: function(){
 		clearInterval(trivia.counter);
 	},
@@ -153,6 +176,5 @@ $(document).ready(function(){
 		trivia.createStartButton();
 		$("#start").on("click", function (event) {	
 				trivia.questionSequence();
-				console.log("trivia");
 			});
 });
